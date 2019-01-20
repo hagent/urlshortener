@@ -1,0 +1,18 @@
+{
+  "extends": "standard",
+  "overrides": [
+    {
+      "files": ["**/*.test.js", "**/*.spec.js", "__mocks__/*"],
+      "globals": {
+        "it": true,
+        "describe": true,
+        "expect": true,
+        "beforeEach": true,
+        "jest": true
+      }
+    }
+  ],
+  "rules": {
+    "space-before-function-paren": 0
+  }
+}
