@@ -2,11 +2,17 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import './App.css'
 
+const Main = styled.div`
+  padding: 20px;
+`
+
 const Table = styled.table`
+  margin-top: 20px;
   border-collapse: collapse;
 
   & td {
     border: 1px solid grey;
+    padding: 5px 20px;
   }
 `
 
@@ -19,28 +25,33 @@ class App extends Component {
   }
   componentDidMount() {
     this.loadUrls()
+    this.loadBaseUrl()
   }
 
   async loadUrls() {
-    const urlsResponse = await fetch('/url')
-    const urls = await urlsResponse.json()
+    const urls = await fetch('/url').then(x => x.json())
     this.setState({ urls })
   }
 
+  async loadBaseUrl() {
+    const { baseRedirectUrl } = await fetch('/config').then(x => x.json())
+    this.setState({ baseRedirectUrl })
+  }
+
   render() {
-    const { urls = [], newUrl } = this.state
+    const { urls = [], newUrl, baseRedirectUrl } = this.state
     return (
-      <div>
+      <Main>
         <form onSubmit={this.handleSubmit}>
           <input
             type="text"
-            placeholder="Enter the url name"
+            placeholder="Enter an url alias name"
             value={newUrl.name}
             onChange={this.handleChange('name')}
           />
           <input
             type="text"
-            placeholder="Enter the url itself"
+            placeholder="Enter an url"
             value={newUrl.url}
             onChange={this.handleChange('url')}
           />
@@ -58,17 +69,25 @@ class App extends Component {
               </tr>
             </thead>
             <tbody>
-              {urls.map(({ name, url, shortUrl }) => (
-                <tr>
+              {urls.map(({ id, name, url, shortUrl }) => (
+                <tr key={id}>
                   <td>{name}</td>
-                  <td>{url}</td>
-                  <td>{shortUrl}</td>
+                  <td>
+                    <a target="_about" href={url}>
+                      {url}
+                    </a>
+                  </td>
+                  <td>
+                    <a target="_about" href={baseRedirectUrl + shortUrl}>
+                      {baseRedirectUrl + shortUrl}
+                    </a>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </Table>
         )}
-      </div>
+      </Main>
     )
   }
 
@@ -86,11 +105,11 @@ class App extends Component {
   }
 
   async submit() {
-    const newUrlResponse = await fetch('/url', {
+    const newUrlBackend = await fetch('/url', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(this.state.newUrl)
-    })
-    const newUrlBackend = await newUrlResponse.json()
+    }).then(x => x.json())
     this.setState({ urls: [newUrlBackend, ...this.state.urls] })
   }
 }

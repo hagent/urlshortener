@@ -1,0 +1,37 @@
+version: "3"
+services:
+  frontend:
+    image: node:10.15.0
+    volumes:
+      - ./packages/urlshortner-frontend:/app
+    working_dir: /app
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3000:3000
+    links:
+      - "backend:backend"
+    command: npm start
+  backend:
+    image: node:10.15.0
+    volumes:
+      - ./packages/urlshortner-backend:/app
+    working_dir: /app
+    depends_on:
+      - postgres
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3010:3010
+    command: npm run devstart
+  postgres:
+    image: postgres:9.6
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "urlshortener"
+      POSTGRES_PASSWORD: "password"
