@@ -1,20 +1,8 @@
 const express = require('express')
-const router = express.Router()
 
 const { Url } = require('../models')
-
-const SHORT_URL_LENGTH = 5
-
-function createShortUrl() {
-  let text = ''
-  const possible = 'abcdefghijklmnopqrstuvwxyz'
-
-  for (var i = 0; i < SHORT_URL_LENGTH; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length))
-  }
-
-  return text
-}
+const getStringHash = require('../services/getStringHash')
+const router = express.Router()
 
 router
   .get('/', async (req, res, next) => {
@@ -22,18 +10,20 @@ router
     res.json(urls)
   })
   .post('/', async (req, res, next) => {
-    let shortUrl = createShortUrl()
+    const { url, name } = req.body
+    let shortUrl = getStringHash(url)
     let alreadyExists = await Url.find({ where: { shortUrl } })
+    let seed = 1
     while (alreadyExists) {
-      console.log('already exists ', shortUrl)
-      shortUrl = createShortUrl()
+      shortUrl = getStringHash(url, seed++)
       alreadyExists = await Url.find({ where: { shortUrl } })
     }
-    const url = await Url.create({
-      ...req.body,
+    const urlEntity = await Url.create({
+      url,
+      name,
       shortUrl
     })
-    res.json(url)
+    res.json(urlEntity)
   })
 
 module.exports = router

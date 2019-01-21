@@ -8,6 +8,9 @@ const urlsRouter = require('./routes/urls')
 const redirect = require('./routes/redirect')
 const config = require('./routes/config')
 
+const { Url } = require('./models/index')
+Url.sync()
+
 const app = express()
 
 app.use(logger('dev'))

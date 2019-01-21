@@ -9,10 +9,9 @@ services:
       - backend
     environment:
       NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
     ports:
       - 3000:3000
-    links:
-      - "backend:backend"
     command: npm start
   backend:
     image: node:10.15.0
@@ -23,6 +22,7 @@ services:
       - postgres
     environment:
       NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
     ports:
       - 3010:3010
     command: npm run devstart

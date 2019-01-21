@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "setup": "npm run inst && npm run migrate",
+    "clean": "rm -rf db packages/urlshortner-backend/node_modules packages/urlshortner-frontend/node_modules",
+    "inst:frontend": "cd packages/urlshortner-frontend && npm install && cd ../..",
+    "inst:backend": "cd packages/urlshortner-backend && npm install && cd ../..",
+    "setup": "npm run inst:frontend && npm run inst:backend",
     "dev": "docker-compose -f docker-compose.dev.yml up"
   },
   "keywords": [],

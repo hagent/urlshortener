@@ -4,7 +4,6 @@ const router = express.Router()
 const { Url } = require('../models')
 
 router.get('/:shortUrl', async (req, res, next) => {
-  console.log(req.baseUrl)
   const url = await Url.find({
     where: {
       shortUrl: req.params.shortUrl

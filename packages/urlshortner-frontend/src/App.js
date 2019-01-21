@@ -110,7 +110,10 @@ class App extends Component {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(this.state.newUrl)
     }).then(x => x.json())
-    this.setState({ urls: [newUrlBackend, ...this.state.urls] })
+    this.setState({
+      urls: [newUrlBackend, ...this.state.urls],
+      newUrl: { name: '', url: '' }
+    })
   }
 }
 
